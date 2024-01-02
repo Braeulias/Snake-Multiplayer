@@ -1,11 +1,37 @@
-const gameBoard = document.getElementById("game-board");
-const gridSize = 20;
-const snakeSpeed = 100; // in milliseconds
+const express = require('express');
+const http = require('http');
+const WebSocket = require('ws');
 
+const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+const gridSize = 20;
 let snake = [{ x: 10, y: 10 }];
 let food = getRandomFoodPosition();
 let direction = "right";
-let isGameRunning = true;
+let isGameRunning = false;
+let gameInterval = null;
+
+app.use(express.static('public'));
+
+wss.on('connection', (ws) => {
+    console.log('Client connected');
+
+    ws.on('message', (message) => {
+        const data = JSON.parse(message);
+
+        if (data.action === 'start' || data.action === 'restart') {
+            snake = [{ x: 10, y: 10 }];
+            food = getRandomFoodPosition();
+            direction = "right";
+            isGameRunning = true;
+            startGame(ws);
+        } else {
+            direction = data.direction;
+        }
+    });
+});
 
 function getRandomPosition() {
     return Math.floor(Math.random() * gridSize);
@@ -17,46 +43,19 @@ function getRandomFoodPosition() {
         x = getRandomPosition();
         y = getRandomPosition();
     } while (snake.some(segment => segment.x === x && segment.y === y));
-
     return { x, y };
 }
 
-function drawGrid() {
-    gameBoard.innerHTML = "";
-    for (let i = 0; i < gridSize * gridSize; i++) {
-        const cell = document.createElement("div");
-        cell.classList.add("game-cell");
-        gameBoard.appendChild(cell);
-    }
+function startGame(ws) {
+    if (gameInterval) clearInterval(gameInterval);
+    gameInterval = setInterval(() => {
+        if (isGameRunning) {
+            updateGame(ws);
+        }
+    }, 125); // Update every 125 milliseconds
 }
 
-function drawSnake() {
-    // Remove existing snake elements
-    document.querySelectorAll('.snake').forEach(e => e.remove());
-
-    snake.forEach(segment => {
-        const snakeSegment = document.createElement("div");
-        snakeSegment.style.gridRowStart = segment.y + 1;
-        snakeSegment.style.gridColumnStart = segment.x + 1;
-        snakeSegment.classList.add("snake");
-        gameBoard.appendChild(snakeSegment);
-    });
-}
-
-function drawFood() {
-    // Remove existing food elements
-    document.querySelector('.food')?.remove();
-
-    const foodElement = document.createElement("div");
-    foodElement.style.gridRowStart = food.y + 1;
-    foodElement.style.gridColumnStart = food.x + 1;
-    foodElement.classList.add("food");
-    gameBoard.appendChild(foodElement);
-}
-
-function update() {
-    if (!isGameRunning) return;
-
+function updateGame(ws) {
     const head = { ...snake[0] };
     switch (direction) {
         case "up":
@@ -76,7 +75,6 @@ function update() {
     if (head.x === food.x && head.y === food.y) {
         snake.unshift(head);
         food = getRandomFoodPosition();
-        drawFood();
     } else {
         snake.pop();
         snake.unshift(head);
@@ -84,32 +82,21 @@ function update() {
 
     if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize || snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y)) {
         isGameRunning = false;
-        alert("Game Over!");
-        return;
+        clearInterval(gameInterval);
+        wss.clients.forEach(client => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify({ gameOver: true }));
+            }
+        });
+    } else {
+        wss.clients.forEach(client => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify({ snake, food, gridSize })); // Include gridSize
+            }
+        });
     }
-
-    drawSnake();
-    setTimeout(update, snakeSpeed);
 }
 
-document.addEventListener("keydown", (event) => {
-    switch (event.key) {
-        case "ArrowUp":
-            if (direction !== "down") direction = "up";
-            break;
-        case "ArrowDown":
-            if (direction !== "up") direction = "down";
-            break;
-        case "ArrowLeft":
-            if (direction !== "right") direction = "left";
-            break;
-        case "ArrowRight":
-            if (direction !== "left") direction = "right";
-            break;
-    }
+server.listen(3000, () => {
+    console.log('Server running on http://localhost:3000');
 });
-
-drawGrid();
-drawSnake();
-drawFood();
-setTimeout(update, snakeSpeed);

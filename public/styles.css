@@ -1,0 +1,24 @@
+#game-board {
+    width: 400px;
+    height: 400px;
+    display: grid;
+    grid-template-columns: repeat(20, 1fr);
+    grid-template-rows: repeat(20, 1fr);
+    gap: 1px;
+    background-color: #000; /* Black gaps will be visible */
+    margin: auto; /* Center the game board */
+    border: 1px solid black; /* Border around the game board */
+}
+
+.game-cell {
+    background-color: #fff; /* White background for cells */
+    border: 1px solid #e1e1e1; /* Light grey borders for cells */
+}
+
+.snake {
+    background-color: green;
+}
+
+.food {
+    background-color: red;
+}
