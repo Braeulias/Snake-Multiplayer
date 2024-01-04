@@ -9,8 +9,10 @@ const wss = new WebSocket.Server({ server });
 const gridSize = 20;
 let players = [{}, {}]; // Supports two players
 let food = getRandomFoodPosition();
-let countdownValue = 3;
+let countdownValue = 5;
 let gameStarted = false;
+let losingPlayerIndex = null;
+let gameEnded = false;
 
 app.use(express.static('public'));
 
@@ -72,21 +74,22 @@ function moveSnake(player) {
 }
 
 function checkCollisions() {
-    players.forEach(player => {
+    players.forEach((player, index) => {
         const head = player.snake[0];
         if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize) {
-            // Handle collision with the grid boundaries
-            // For example, end the game or reset the snake's position
-            console.log(`Player collided with boundary.`);
-            // Reset the player's snake for simplicity
-            initializePlayer(player, players.indexOf(player));
+            console.log(`Player ${index + 1} collided with boundary.`);
+            gameEnded = true;
+            losingPlayerIndex = index; // Set the index of the losing player
         }
     });
 }
 
-function updateGame() {
-    if (!gameStarted) return; // Ensure game doesn't update before starting
 
+function updateGame() {
+    if (gameEnded) {
+        broadcast({ gameEnded: true, losingPlayerIndex });
+    }
+    if (!gameStarted || gameEnded) return;
     // Move each snake
     players.forEach(player => {
         if (player.snake) {

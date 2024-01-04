@@ -11,6 +11,7 @@ const gridSize = 20; // Define gridSize on the client as well
 drawGrid();
 
 startButton.addEventListener('click', () => {
+    startButton.disabled = true;
     ws.send(JSON.stringify({ action: 'start' }));
 });
 
@@ -21,8 +22,15 @@ ws.onopen = () => {
 ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
 
+    if (data.gameEnded) {
+        const message = `Game Over! Player ${data.losingPlayerIndex + 1} lost by hitting a boundary.`;
+        alert(message); // Display an alert or update the DOM
+        // Additional logic to handle the end of the game
+    }
+
     if (data.countdown !== undefined) {
         console.log(`Starting in ${data.countdown}...`); // Countdown working
+        document.getElementById("timer").innerText = data.countdown;
     } else if (data.gameStarted) {
         gameStarted = true;
         console.log("Game has started!"); // Make sure this gets logged
