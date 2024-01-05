@@ -38,6 +38,9 @@ function initializePlayer(player, index) {
         player.snake = [{ x: 15, y: 10 }];
         player.direction = "left";
     }
+    player.color = 'green'; // Default color, will be updated later
+    player.score = 0; // Initialize score
+    player.lost = false;
     player.isReady = false;
 }
 
@@ -64,6 +67,7 @@ function moveSnake(player) {
     if (newHead.x === food.x && newHead.y === food.y) {
         // The snake grows and new food is generated
         food = getRandomFoodPosition();
+        player.score += 1;
     } else {
         // Remove the last segment of the snake
         player.snake.pop();
@@ -76,35 +80,45 @@ function moveSnake(player) {
 function checkCollisions() {
     players.forEach((player, index) => {
         const head = player.snake[0];
+
+        // Check for boundary collisions
         if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize) {
             console.log(`Player ${index + 1} collided with boundary.`);
             gameEnded = true;
-            losingPlayerIndex = index; // Set the index of the losing player
+            losingPlayerIndex = index;
+            return; // Add this line to exit early
+        }
+
+        // Check for self-collision
+        for (let i = 1; i < player.snake.length; i++) {
+            if (head.x === player.snake[i].x && head.y === player.snake[i].y) {
+                console.log(`Player ${index + 1} collided with itself.`);
+                gameEnded = true;
+                losingPlayerIndex = index;
+                return; // Add this line to exit early
+            }
         }
     });
 }
 
 
 function updateGame() {
-    if (gameEnded) {
-        broadcast({ gameEnded: true, losingPlayerIndex });
-    }
     if (!gameStarted || gameEnded) return;
-    // Move each snake
+
+    // Move each snake and check collisions
     players.forEach(player => {
         if (player.snake) {
             moveSnake(player);
+            checkCollisions();
         }
     });
 
-    // Check for collisions
-    checkCollisions();
-
-    // After updating the game state, broadcast it to all clients
-    broadcast({ players, food, gridSize });
-
-    // Set the next game update
-    setTimeout(updateGame, 125); // Adjust the timing as needed
+    if (gameEnded) {
+        broadcast({ gameEnded: true, losingPlayerIndex });
+    } else {
+        broadcast({ players, food, gridSize });
+        setTimeout(updateGame, 125);
+    }
 }
 
 function startCountdown() {
@@ -121,7 +135,20 @@ function startCountdown() {
     }, 1000);
 }
 
-
+function restartGame() {
+    players = players.map((_, index) => {
+        const newPlayer = {};
+        initializePlayer(newPlayer, index);
+        newPlayer.isConnected = true; // Keep the player as connected
+        newPlayer.lost = false; // Reset the lost status
+        return newPlayer;
+    });
+    players.forEach(player => player.score = 0);
+    food = getRandomFoodPosition();
+    gameStarted = false;
+    gameEnded = false;
+    broadcast({ gameRestarted: true, players, food, gridSize });
+}
 
 wss.on('connection', (ws, req) => {
     const ip = req.socket.remoteAddress;
@@ -142,9 +169,18 @@ wss.on('connection', (ws, req) => {
     initializePlayer(players[playerIndex], playerIndex); // Pass the player index
     players[playerIndex].isConnected = true;
     players[playerIndex].isConnected = true;
+
     ws.on('message', (message) => {
         const data = JSON.parse(message);
         const player = players[playerIndex];
+
+        if (data.action === 'setColor') {
+            players[playerIndex].color = data.color; // Update the player's color
+        }
+
+        if (data.action === 'restart') {
+            restartGame();
+        }
 
         if (data.action === 'start') {
             player.isReady = true;

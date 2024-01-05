@@ -8,8 +8,16 @@
 <body>
     <h1>Snake Game</h1>
     <button id="startButton">Start Game</button>
+    <button id="restartButton" disabled>Restart Game</button>
+    <div id="scoreboard">
+        <div>Player 1 Score: <span id="player1Score">0</span></div>
+        <div>Player 2 Score: <span id="player2Score">0</span></div>
+    </div>
+    <label for="colorPicker">Choose Your Snake Color:</label>
+    <input type="color" id="colorPicker" name="color">
     <h1 id="timer"></h1>
     <div id="game-board"></div>
+
     <script src="client.js"></script>
 </body>
 </html>

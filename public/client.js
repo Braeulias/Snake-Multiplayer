@@ -19,8 +19,30 @@ ws.onopen = () => {
     console.log(`Player ${playerIndex} connected to server`);
 };
 
+document.getElementById("restartButton").addEventListener('click', () => {
+    ws.send(JSON.stringify({ action: 'restart' }));
+});
+
 ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
+
+    if (data.gameEnded) {
+        // Existing code...
+        document.getElementById("restartButton").disabled = false;
+    }
+
+    if (data.players) {
+        document.getElementById("player1Score").innerText = data.players[0].score;
+        document.getElementById("player2Score").innerText = data.players[1].score;
+    }
+
+    if (data.gameRestarted) {
+        console.log("Game has restarted!");
+        resetGameBoard(); // Resets the game board
+        startButton.disabled = false;
+        document.getElementById("restartButton").disabled = true;
+        gameStarted = false; // Reset game started flag
+    }
 
     if (data.gameEnded) {
         const message = `Game Over! Player ${data.losingPlayerIndex + 1} lost by hitting a boundary.`;
@@ -44,7 +66,10 @@ ws.onmessage = (event) => {
 };
 
 // The rest of the client functions go here
-
+document.getElementById('colorPicker').addEventListener('change', (event) => {
+    const chosenColor = event.target.value;
+    ws.send(JSON.stringify({ action: 'setColor', color: chosenColor }));
+});
 
 document.addEventListener('keydown', sendDirectionChange);
 
@@ -70,6 +95,23 @@ function sendDirectionChange(event) {
     ws.send(JSON.stringify({ action: 'direction', direction: direction }));
 }
 
+function resetGameBoard() {
+    // Clear the game board
+    while (gameBoard.firstChild) {
+        gameBoard.removeChild(gameBoard.firstChild);
+    }
+
+    document.getElementById("player1Score").innerText = "0";
+    document.getElementById("player2Score").innerText = "0";
+    // Redraw the grid
+    drawGrid();
+
+    // Disable the restart button initially
+    document.getElementById("restartButton").disabled = true;
+
+    // Re-enable the start button
+    startButton.disabled = false;
+}
 
 
 function drawGrid() {
@@ -90,16 +132,17 @@ function drawSnakes(players) {
     players.forEach((player, index) => {
         // Each snake can have a different class or style
         const snakeClass = index === 0 ? 'snake1' : 'snake2';
-        drawSnake(player.snake, snakeClass);
+        drawSnake(player.snake, snakeClass, player.color); // Pass the color to the drawSnake function
     });
 }
 
-function drawSnake(snake, snakeClass) {
+function drawSnake(snake, snakeClass, color) {
     // Remove existing snake elements for this player
     document.querySelectorAll(`.${snakeClass}`).forEach(e => e.remove());
 
     snake.forEach(segment => {
         const snakeSegment = document.createElement("div");
+        snakeSegment.style.backgroundColor = color;
         snakeSegment.style.gridRowStart = segment.y + 1;
         snakeSegment.style.gridColumnStart = segment.x + 1;
         snakeSegment.classList.add(snakeClass); // Use the class for the specific snake

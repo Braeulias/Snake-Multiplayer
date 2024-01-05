@@ -15,21 +15,9 @@
     border: 1px solid #e1e1e1; /* Light grey borders for cells */
 }
 
-.snake {
-    background-color: green;
-}
 
-.snakeClass {
-    background-color: green;
-    color: green;
-}
-.snake1 {
-    background-color: green; /* Color for snake 1 */
-}
 
-.snake2 {
-    background-color: blueviolet; /* Color for snake 2 */
-}
+
 
 
 .food {
