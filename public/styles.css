@@ -1,25 +1,70 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.title {
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+.scoreboard {
+    margin: 20px 0;
+    font-size: 1.2em;
+}
+
+.color-picker {
+    margin: 20px 0;
+}
+
+.timer {
+    font-size: 1.5em;
+    margin: 20px 0;
+}
+
 #game-board {
-    width: 400px;
-    height: 400px;
+    width: 600px;
+    height: 600px;
     display: grid;
     grid-template-columns: repeat(20, 1fr);
     grid-template-rows: repeat(20, 1fr);
-    gap: 1px;
-    background-color: #000; /* Black gaps will be visible */
-    margin: auto; /* Center the game board */
-    border: 1px solid black; /* Border around the game board */
+    gap: 2px;
+    background-color: #ddd;
+    margin: 20px auto;
+    border: 2px solid #333;
 }
 
 .game-cell {
-    background-color: #fff; /* White background for cells */
-    border: 1px solid #e1e1e1; /* Light grey borders for cells */
+    background-color: #fff;
+    border: 1px solid #e1e1e1;
 }
-
-
-
-
-
 
 .food {
     background-color: red;
 }
+
+/* Add any additional styles for snake, food, etc. */

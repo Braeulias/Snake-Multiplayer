@@ -6,17 +6,23 @@
     <title>Snake Game</title>
 </head>
 <body>
-    <h1>Snake Game</h1>
-    <button id="startButton">Start Game</button>
-    <button id="restartButton" disabled>Restart Game</button>
-    <div id="scoreboard">
+<div class="container">
+    <h1 class="title">Snake Game</h1>
+    <div class="buttons">
+        <button id="startButton" class="btn">Start Game</button>
+        <button id="restartButton" class="btn" disabled>Restart Game</button>
+    </div>
+    <div id="scoreboard" class="scoreboard">
         <div>Player 1 Score: <span id="player1Score">0</span></div>
         <div>Player 2 Score: <span id="player2Score">0</span></div>
     </div>
-    <label for="colorPicker">Choose Your Snake Color:</label>
-    <input type="color" id="colorPicker" name="color">
-    <h1 id="timer"></h1>
-    <div id="game-board"></div>
+    <div class="color-picker">
+        <label for="colorPicker">Choose Your Snake Color:</label>
+        <input type="color" id="colorPicker" name="color">
+    </div>
+    <h2 id="timer" class="timer"></h2>
+    <div id="game-board" class="game-board"></div>
+</div>
 
     <script src="client.js"></script>
 </body>
