@@ -55,11 +55,11 @@ Contributions, issues, and feature requests are welcome! Feel free to check [iss
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+IDK
 
 ## Contact
 
-Your Name - [Your contact information]
+Your Name - Elias Bräuer
 
 Project Link: [repository-url]
 
