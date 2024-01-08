@@ -2,6 +2,8 @@
 
 
 This repository hosts the code for a simple yet engaging multiplayer snake game, designed to be run in a web browser. Utilizing WebSocket for real-time communication, this game allows two players to compete against each other in the classic snake game. Below is a guide to help you understand and navigate through the project.
+#THIS IS STILL A DEMO, there are a lot more features incomming:
+Next: Player collision, then gamemodes and improved UI
 
 ## How to Play
 
