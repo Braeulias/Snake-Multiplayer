@@ -204,6 +204,6 @@ function isOppositeDirection(dir1, dir2) {
         (dir1 === 'down' && dir2 === 'up');
 }
 
-server.listen(3000, '192.168.0.129', () => {
-    console.log('Server running on http://192.168.0.129:3000');
+server.listen(3000, 'YourIpAdress or nothing for localhost', () => {
+    console.log('Server running on http://the same:3000');
 });
