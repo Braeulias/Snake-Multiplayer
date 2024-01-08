@@ -45,7 +45,7 @@ This repository hosts the code for a simple yet engaging multiplayer snake game,
    node server.js
    ```
 4. **Access the Game:**
-   Open `http://localhost:3000` in a web browser.
+   Open `http://localhost:3000` in a web browser. | You can also change the server to your IP address and play with other on your Network
 
 ## Technologies Used
 
