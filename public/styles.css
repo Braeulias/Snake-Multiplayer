@@ -67,4 +67,103 @@ body {
     background-color: red;
 }
 
-/* Add any additional styles for snake, food, etc. */
+.mobile-controls {
+    display: none; /* Hidden by default */
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 200px; /* Adjust as necessary */
+}
+
+.control-btn {
+    padding: 15px;
+    margin: 5px;
+    font-size: 16px;
+    border: 1px solid #333;
+    border-radius: 50%; /* Circular buttons */
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    width: 100px; /* Adjust as necessary */
+    height: 100px; /* Adjust as necessary */
+}
+
+/* Positioning the buttons */
+#upBtn {
+    order: 1;
+    grid-column: 2;
+    grid-row: 1;
+}
+
+#leftBtn {
+    order: 2;
+    grid-column: 1;
+    grid-row: 2;
+}
+
+#downBtn {
+    order: 3;
+    grid-column: 2;
+    grid-row: 3;
+}
+
+#rightBtn {
+    order: 4;
+    grid-column: 3;
+    grid-row: 2;
+}
+
+@media screen and (max-width: 1000px) {
+    .mobile-controls {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+    }
+}
+
+/* The switch - the box around the slider */
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px; /* Reduced width */
+    height: 22px; /* Reduced height */
+}
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 22px; /* Match the height for rounded corners */
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px; /* Reduced height */
+    width: 18px; /* Reduced width */
+    left: 2px; /* Adjusted for smaller size */
+    bottom: 2px; /* Adjusted for smaller size */
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(18px); /* Adjusted for smaller size */
+}

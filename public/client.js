@@ -1,6 +1,6 @@
 const queryParams = new URLSearchParams(window.location.search);
-const playerIndex = queryParams.get('player') || 1;
-const ws = new WebSocket(`ws://192.168.0.129:3000/player${playerIndex}`);
+const playerIndex = parseInt(queryParams.get('player')) || 1;
+const ws = new WebSocket(`ws://localhost or your IpAdress:3000/player${playerIndex}`);
 
 const gameBoard = document.getElementById("game-board");
 const startButton = document.getElementById("startButton");
@@ -26,6 +26,11 @@ document.getElementById("restartButton").addEventListener('click', () => {
 ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
 
+    if (data.action === 'updateCollision') {
+        document.getElementById('collisionSwitch').checked = data.collision;
+    }
+
+
     if (data.gameEnded) {
         // Existing code...
         document.getElementById("restartButton").disabled = false;
@@ -36,8 +41,19 @@ ws.onmessage = (event) => {
         document.getElementById("player2Score").innerText = data.players[1].score;
     }
 
+
+
+    if (data.action === 'playerStarted') {
+        if (data.playerIndex !== playerIndex) {
+            // Show message only if the other player has started the game
+            document.getElementById("readiness").innerText = `Player ${data.playerIndex} is ready!`;
+        }
+    }
+
     if (data.gameRestarted) {
         console.log("Game has restarted!");
+        document.getElementById("timer").innerText = "";
+        document.getElementById("readiness").innerText = "";
         resetGameBoard(); // Resets the game board
         startButton.disabled = false;
         document.getElementById("restartButton").disabled = true;
@@ -45,7 +61,7 @@ ws.onmessage = (event) => {
     }
 
     if (data.gameEnded) {
-        const message = `Game Over! Player ${data.losingPlayerIndex + 1} lost by hitting a boundary.`;
+        const message = `Game Over! Player ${data.losingPlayerIndex + 1} lost by hitting a boundary or a snake.`;
         alert(message); // Display an alert or update the DOM
         // Additional logic to handle the end of the game
     }
@@ -73,6 +89,18 @@ document.getElementById('colorPicker').addEventListener('change', (event) => {
 
 document.addEventListener('keydown', sendDirectionChange);
 
+document.getElementById('upBtn').addEventListener('click', () => sendDirectionChange({ key: "ArrowUp" }));
+document.getElementById('downBtn').addEventListener('click', () => sendDirectionChange({ key: "ArrowDown" }));
+document.getElementById('leftBtn').addEventListener('click', () => sendDirectionChange({ key: "ArrowLeft" }));
+document.getElementById('rightBtn').addEventListener('click', () => sendDirectionChange({ key: "ArrowRight" }));
+
+document.getElementById('collisionSwitch').addEventListener('change', (event) => {
+    const collisionEnabled = event.target.checked;
+    ws.send(JSON.stringify({ action: 'setCollision', collision: collisionEnabled }));
+});
+
+
+
 function sendDirectionChange(event) {
     let direction;
     switch (event.key) {
@@ -94,6 +122,17 @@ function sendDirectionChange(event) {
     console.log("Sending direction:", direction); // Log the direction being sent
     ws.send(JSON.stringify({ action: 'direction', direction: direction }));
 }
+
+document.getElementById('player1Collision').addEventListener('change', () => {
+    const collisionEnabled = document.getElementById('player1Collision').checked;
+    ws.send(JSON.stringify({ action: 'setCollision', playerIndex: 1, collision: collisionEnabled }));
+});
+
+document.getElementById('player2Collision').addEventListener('change', () => {
+    const collisionEnabled = document.getElementById('player2Collision').checked;
+    ws.send(JSON.stringify({ action: 'setCollision', playerIndex: 2, collision: collisionEnabled }));
+});
+
 
 function resetGameBoard() {
     // Clear the game board
@@ -124,9 +163,7 @@ function drawGrid() {
     }
 }
 
-// Client-side Code (Inside client.js)
 
-// ... [previous code] ...
 
 function drawSnakes(players) {
     players.forEach((player, index) => {
@@ -156,7 +193,6 @@ function drawSnake(snake, snakeClass, color) {
 function drawFood(food) {
     // Remove existing food elements
     document.querySelector('.food')?.remove();
-
     const foodElement = document.createElement("div");
     foodElement.style.gridRowStart = food.y + 1;
     foodElement.style.gridColumnStart = food.x + 1;

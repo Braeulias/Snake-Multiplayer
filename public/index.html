@@ -12,6 +12,7 @@
         <button id="startButton" class="btn">Start Game</button>
         <button id="restartButton" class="btn" disabled>Restart Game</button>
     </div>
+    <div id="readiness"> </div>
     <div id="scoreboard" class="scoreboard">
         <div>Player 1 Score: <span id="player1Score">0</span></div>
         <div>Player 2 Score: <span id="player2Score">0</span></div>
@@ -20,8 +21,28 @@
         <label for="colorPicker">Choose Your Snake Color:</label>
         <input type="color" id="colorPicker" name="color">
     </div>
+    <div class="player-settings">
+        <label for="collisionSwitch">Enable Collision for Both Players:</label>
+        <label class="switch">
+            <input type="checkbox" id="collisionSwitch">
+            <span class="slider round"></span>
+        </label>
+    </div>
+
+
     <h2 id="timer" class="timer"></h2>
     <div id="game-board" class="game-board"></div>
+
+
+    <!-- Mobile Controls -->
+    <div class="mobile-controls">
+        <button class="control-btn" id="upBtn">Up</button>
+        <button class="control-btn" id="leftBtn">Left</button>
+        <button class="control-btn" id="downBtn">Down</button>
+        <button class="control-btn" id="rightBtn">Right</button>
+    </div>
+
+
 </div>
 
     <script src="client.js"></script>
