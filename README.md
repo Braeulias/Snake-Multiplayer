@@ -1,36 +1,37 @@
 # 🐍 Multiplayer Snake Game
 
+This repository hosts the code for a simple yet engaging multiplayer snake game, designed to be run in a web browser. Utilizing WebSocket for real-time communication, this game allows two players to compete against each other in the classic snake game. Mobile and Desktop
 
-This repository hosts the code for a simple yet engaging multiplayer snake game, designed to be run in a web browser. Utilizing WebSocket for real-time communication, this game allows two players to compete against each other in the classic snake game. Below is a guide to help you understand and navigate through the project.
+## 🚧 Project Status
 
+This is still a demo, with more features incoming:
+- Game modes
 
-## THIS IS STILL A DEMO, there are a lot more features incomming:
-## Next: Player collision, then gamemodes and improved UI
+## 🎮 How to Play
 
-## How to Play
+- **Starting the Game:** Players can start the game by clicking the 'Start Game' button.
+- **Controlling the Snake:** Use the arrow keys to control the snake's direction (Up, Down, Left, Right).
+- **Scoring and Growing:** Eating food (red blocks) grows the snake and increases the score.
+- **Game Over Conditions:** Hitting the boundaries or self-colliding will end the game.
+- **Restarting the Game:** The 'Restart Game' button can be used to reset the game after it has ended.
 
-1. **Starting the Game:** Players can start the game by pressing the 'Start Game' button.
-2. **Controlling the Snake:** Use arrow keys to control the snake's direction (Up, Down, Left, Right).
-3. **Scoring and Growing:** Eating food (red blocks) grows the snake and increases the score.
-4. **Game Over Conditions:** Hitting the boundaries or self-colliding will end the game.
-5. **Restarting the Game:** The 'Restart Game' button can be used to reset the game.
+## ✨ Features
 
-## Features
-
-- **Multiplayer Gameplay:** Two players can play simultaneously.
+- **Mobile Support:** This game is also supported on mobile devices
+- **Multiplayer Gameplay:** Allows two players to play simultaneously.
 - **Real-Time Updates:** Leveraging WebSocket for fluid, real-time gameplay.
 - **Customizable Snakes:** Players can choose their snake color.
 - **Scoreboard:** Real-time score update for both players.
-- **Countdown Timer:** A countdown at the beginning for synchronized start.
+- **Countdown Timer:** A countdown at the beginning for a synchronized start.
 
-## Project Structure
+## 📂 Project Structure
 
-- `index.html`: Main HTML file for the game interface.
+- `index.html`: The main HTML file for the game interface.
 - `styles.css`: Contains styling for the game interface.
 - `client.js`: Handles client-side logic, WebSocket communication, and UI interactions.
 - `server.js`: Sets up the server, WebSocket, and game logic.
 
-## Setup and Installation
+## ⚙️ Setup and Installation
 
 1. **Clone the Repository:**
    ```bash
@@ -39,35 +40,27 @@ This repository hosts the code for a simple yet engaging multiplayer snake game,
 2. **Install Dependencies:**
    ```bash
    npm install
+   npm install express
    ```
 3. **Start the Server:**
    ```bash
    node server.js
    ```
 4. **Access the Game:**
-   Open `http://localhost:3000` in a web browser. | You can also change the server to your IP address and play with other on your Network
+   Open **http://localhost:3000** in a web browser to play locally, or use your IP address to play with others on your network.
 
-## Technologies Used
+## 🛠 Technologies Used
 
 - **HTML/CSS:** For building the user interface.
 - **JavaScript:** For client-side and server-side logic.
-- **Node.js and Express.js:** For setting up the server.
-- **WebSocket:** For real-time bi-directional communication between clients and server.
+- **Node.js and Express.js**: For setting up the server.
+- **WebSocket:** For real-time bi-directional communication between clients and the server.
 
-## Contributing
+## 🤝 Contributing
+   Contributions, issues, and feature requests are welcome! Feel free to check issues page.
 
-Contributions, issues, and feature requests are welcome! Feel free to check [issues page](link-to-issues-page).
+## ✉️ Contact
+Elias Bräuer
 
-## License
 
-IDK
-
-## Contact
-
-Your Name - Elias Bräuer
-
-Project Link: [repository-url]
-
----
-
-Happy Gaming! 🎮 🌟
+   
