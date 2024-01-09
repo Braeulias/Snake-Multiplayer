@@ -7,12 +7,14 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 const gridSize = 20;
-let players = [{}, {}]; // Supports two players
+let players = [{}, {}]; // S
+// upports two players
 let food = getRandomFoodPosition();
 let countdownValue = 5;
 let gameStarted = false;
 let losingPlayerIndex = null;
 let gameEnded = false;
+
 
 app.use(express.static('public'));
 
@@ -38,10 +40,12 @@ function initializePlayer(player, index) {
         player.snake = [{ x: 15, y: 10 }];
         player.direction = "left";
     }
-    player.color = 'green'; // Default color, will be updated later
+
+    player.color = 'green';// Default color, will be updated later
     player.score = 0; // Initialize score
     player.lost = false;
     player.isReady = false;
+    player.collisionEnabled = false;
 }
 
 
@@ -98,6 +102,22 @@ function checkCollisions() {
                 return; // Add this line to exit early
             }
         }
+
+        if (players.every(p => p.collisionEnabled)) {
+            // Check for collisions with the other snake
+            const otherPlayerIndex = 1 - index;
+            const otherPlayer = players[otherPlayerIndex];
+            if (otherPlayer.snake) {
+                for (let segment of otherPlayer.snake) {
+                    if (head.x === segment.x && head.y === segment.y) {
+                        console.log(`Player ${index + 1} collided with player ${otherPlayerIndex + 1}.`);
+                        gameEnded = true;
+                        losingPlayerIndex = index;
+                        return;
+                    }
+                }
+            }
+        }
     });
 }
 
@@ -136,11 +156,19 @@ function startCountdown() {
 }
 
 function restartGame() {
-    players = players.map((_, index) => {
+    players = players.map((player, index) => {
         const newPlayer = {};
+        // Retain the existing color
+        const existingColor = player.color;
+        const existingCollision = player.collisionEnabled;
+
         initializePlayer(newPlayer, index);
+
         newPlayer.isConnected = true; // Keep the player as connected
         newPlayer.lost = false; // Reset the lost status
+        newPlayer.color = existingColor; // Set the retained color
+        newPlayer.collisionEnabled = existingCollision; // Set the retained collision setting
+
         return newPlayer;
     });
     players.forEach(player => player.score = 0);
@@ -174,21 +202,36 @@ wss.on('connection', (ws, req) => {
         const data = JSON.parse(message);
         const player = players[playerIndex];
 
+
         if (data.action === 'setColor') {
             players[playerIndex].color = data.color; // Update the player's color
         }
 
-        if (data.action === 'restart') {
+        if (data.action === 'restart' && gameEnded == true) {
             restartGame();
         }
 
+        if (data.action === 'setCollision' && gameStarted == false) {
+            // Update collision setting for all players
+            players.forEach(player => {
+                player.collisionEnabled = data.collision;
+            });
+            broadcast({ action: 'updateCollision', collision: data.collision });
+        }
+
+
+
         if (data.action === 'start') {
             player.isReady = true;
+            // Broadcast that this player has started the game
+            broadcast({ action: 'playerStarted', playerIndex: playerIndex + 1 });
+
+            // Check if all players are ready
             const allReady = players.every(p => p.isReady);
             if (allReady && !gameStarted) {
                 startCountdown();
             }
-        } else if (data.action === 'direction') {
+    } else if (data.action === 'direction') {
             // Process direction changes outside of the 'start' condition
             const newDirection = data.direction;
             if (!isOppositeDirection(player.direction, newDirection)) {
@@ -204,6 +247,7 @@ function isOppositeDirection(dir1, dir2) {
         (dir1 === 'down' && dir2 === 'up');
 }
 
-server.listen(3000, 'YourIpAdress or nothing for localhost', () => {
-    console.log('Server running on http://the same:3000');
+server.listen(3000, 'Nothing for localhost OR your IP adress', () => {
+    console.log('Server running on http://same as aboth:3000');
+
 });
