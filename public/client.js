@@ -1,6 +1,6 @@
 const queryParams = new URLSearchParams(window.location.search);
 const playerIndex = parseInt(queryParams.get('player')) || 1;
-const ws = new WebSocket(`ws://Localhost OR your IP:3000/player${playerIndex}`);
+const ws = new WebSocket(`ws://Localhost OR your Ip:3000/player${playerIndex}`);
 
 const gameBoard = document.getElementById("game-board");
 const startButton = document.getElementById("startButton");

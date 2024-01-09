@@ -124,7 +124,14 @@ body {
         grid-template-columns: repeat(3, 1fr);
         grid-template-rows: repeat(3, 1fr);
     }
+
+    .instructions {
+        display: none; /* Hide the instructions on mobile */
+    }
+
+
 }
+
 
 /* The switch - the box around the slider */
 /* The switch - the box around the slider */
@@ -167,5 +174,34 @@ input:checked + .slider {
 input:checked + .slider:before {
     transform: translateX(18px); /* Adjusted for smaller size */
 }
+
+/* ... existing CSS ... */
+
+.container {
+    position: relative; /* Establish a positioning context */
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center; /* Center content */
+}
+
+.instructions {
+    position: absolute; /* Absolute position for the instructions */
+    left: 200px; /* Adjust as needed */
+    top: 400px; /* Adjust as needed, align with game board */
+    width: 250px; /* Set a fixed width for the instructions */
+    height: 350px;
+    padding: 20px;
+    border: 1px solid #ccc; /* Optional: adds a border around the instructions */
+    border-radius: 5px; /* Optional: rounds the corners of the instructions box */
+    background-color: #f9f9f9; /* Optional: sets a background color for the instructions box */
+    box-shadow: 0 0 5px #ccc; /* Optional: adds a shadow to the instructions box */
+    font-size: 1.1em;
+}
+
+
+
+
+/* ... existing CSS ... */
 
 
