@@ -1,6 +1,6 @@
 const queryParams = new URLSearchParams(window.location.search);
 const playerIndex = parseInt(queryParams.get('player')) || 1;
-const ws = new WebSocket(`ws://localhost or your IpAdress:3000/player${playerIndex}`);
+const ws = new WebSocket(`ws://Localhost OR your IP:3000/player${playerIndex}`);
 
 const gameBoard = document.getElementById("game-board");
 const startButton = document.getElementById("startButton");
@@ -106,22 +106,27 @@ function sendDirectionChange(event) {
     switch (event.key) {
         case "ArrowUp":
             direction = "up";
+            event.preventDefault(); // Prevent scrolling
             break;
         case "ArrowDown":
             direction = "down";
+            event.preventDefault(); // Prevent scrolling
             break;
         case "ArrowLeft":
             direction = "left";
+            event.preventDefault(); // Prevent scrolling
             break;
         case "ArrowRight":
             direction = "right";
+            event.preventDefault(); // Prevent scrolling
             break;
         default:
-            return;
+            return; // Exit this handler for other keys
     }
     console.log("Sending direction:", direction); // Log the direction being sent
     ws.send(JSON.stringify({ action: 'direction', direction: direction }));
 }
+
 
 document.getElementById('player1Collision').addEventListener('change', () => {
     const collisionEnabled = document.getElementById('player1Collision').checked;

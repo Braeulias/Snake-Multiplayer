@@ -247,7 +247,7 @@ function isOppositeDirection(dir1, dir2) {
         (dir1 === 'down' && dir2 === 'up');
 }
 
-server.listen(3000, 'Nothing for localhost OR your IP adress', () => {
-    console.log('Server running on http://same as aboth:3000');
+server.listen(3000, 'Nothing for localhost OR your IP', () => {
+    console.log('Server running on http://same as aboth :3000');
 
 });
