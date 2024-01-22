@@ -205,3 +205,15 @@ input:checked + .slider:before {
 /* ... existing CSS ... */
 
 
+.game-mode {
+    margin: 20px 0;
+}
+
+.game-mode select {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #333;
+}
+
+
+/* ... existing CSS ... */

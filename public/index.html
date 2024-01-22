@@ -28,6 +28,17 @@
             <span class="slider round"></span>
         </label>
     </div>
+    <div class="game-mode">
+        <label for="gameModeSelect">Select Game Mode:</label>
+        <select id="gameModeSelect" name="gameMode">
+            <option value="classic">Classic</option>
+            <option value="speed">Speed Increase</option>
+            <option value="obstacles">Obstacles</option>
+            <option value="single">Singleplayer</option>
+            <option value="god">GodMode</option>
+            <!-- Add more game modes if needed -->
+        </select>
+    </div>
 
 
     <h2 id="timer" class="timer"></h2>
@@ -45,8 +56,8 @@
     </div>
 
 
-        <div id="game-board" class="game-board">
-        </div>
+    <div id="game-board" class="game-board">
+    </div>
 
 
 
@@ -61,6 +72,6 @@
 
 </div>
 
-    <script src="client.js"></script>
+<script src="client.js"></script>
 </body>
 </html>

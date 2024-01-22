@@ -14,6 +14,7 @@ let countdownValue = 5;
 let gameStarted = false;
 let losingPlayerIndex = null;
 let gameEnded = false;
+let gamemode = "Classic"
 
 
 app.use(express.static('public'));
@@ -72,6 +73,7 @@ function moveSnake(player) {
         // The snake grows and new food is generated
         food = getRandomFoodPosition();
         player.score += 1;
+        broadcast({ action: 'eat'}); // Add this line
     } else {
         // Remove the last segment of the snake
         player.snake.pop();
@@ -120,6 +122,8 @@ function checkCollisions() {
         }
     });
 }
+
+
 
 
 function updateGame() {
@@ -219,6 +223,9 @@ wss.on('connection', (ws, req) => {
             broadcast({ action: 'updateCollision', collision: data.collision });
         }
 
+        if (data.action === 'setGameMode') {
+            broadcast({ action: 'updateGameMode', gameMode: data.gameMode });
+        }
 
 
         if (data.action === 'start') {
@@ -247,7 +254,7 @@ function isOppositeDirection(dir1, dir2) {
         (dir1 === 'down' && dir2 === 'up');
 }
 
-server.listen(3000, 'Nothing for Localhost OR your IP', () => {
-    console.log('Server running on http://Same as aboth :3000');
+server.listen(3000, '10.95.0.209', () => {
+    console.log('Server running on http://10.95.0.209:3000');
 
 });

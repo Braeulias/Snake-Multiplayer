@@ -1,6 +1,6 @@
 const queryParams = new URLSearchParams(window.location.search);
 const playerIndex = parseInt(queryParams.get('player')) || 1;
-const ws = new WebSocket(`ws://Localhost OR your Ip:3000/player${playerIndex}`);
+const ws = new WebSocket(`ws://10.95.0.209:3000/player${playerIndex}`);
 
 const gameBoard = document.getElementById("game-board");
 const startButton = document.getElementById("startButton");
@@ -18,6 +18,12 @@ startButton.addEventListener('click', () => {
 ws.onopen = () => {
     console.log(`Player ${playerIndex} connected to server`);
 };
+
+document.getElementById('gameModeSelect').addEventListener('change', (event) => {
+    const selectedMode = event.target.value;
+    ws.send(JSON.stringify({ action: 'setGameMode', gameMode: selectedMode }));
+});
+
 
 document.getElementById("restartButton").addEventListener('click', () => {
     ws.send(JSON.stringify({ action: 'restart' }));
@@ -48,6 +54,14 @@ ws.onmessage = (event) => {
             // Show message only if the other player has started the game
             document.getElementById("readiness").innerText = `Player ${data.playerIndex} is ready!`;
         }
+    }
+
+    if (data.action === 'eat') {
+        eatSound.play();
+    }
+
+    if (data.action === 'updateGameMode') {
+        document.getElementById("gameModeSelect").value = data.gameMode;
     }
 
     if (data.gameRestarted) {
@@ -128,15 +142,6 @@ function sendDirectionChange(event) {
 }
 
 
-document.getElementById('player1Collision').addEventListener('change', () => {
-    const collisionEnabled = document.getElementById('player1Collision').checked;
-    ws.send(JSON.stringify({ action: 'setCollision', playerIndex: 1, collision: collisionEnabled }));
-});
-
-document.getElementById('player2Collision').addEventListener('change', () => {
-    const collisionEnabled = document.getElementById('player2Collision').checked;
-    ws.send(JSON.stringify({ action: 'setCollision', playerIndex: 2, collision: collisionEnabled }));
-});
 
 
 function resetGameBoard() {
@@ -168,6 +173,8 @@ function drawGrid() {
     }
 }
 
+const eatSound = new Audio("sounds/Nom.mp3"); // Replace with the correct path to your sound file
+
 
 
 function drawSnakes(players) {
@@ -183,6 +190,7 @@ function drawSnake(snake, snakeClass, color) {
     document.querySelectorAll(`.${snakeClass}`).forEach(e => e.remove());
 
     snake.forEach(segment => {
+
         const snakeSegment = document.createElement("div");
         snakeSegment.style.backgroundColor = color;
         snakeSegment.style.gridRowStart = segment.y + 1;
